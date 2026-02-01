@@ -22,7 +22,7 @@ scaler = preproc["scaler"]
 le = preproc["label_encoder"]
 
 # =========================================================
-# MODEL DEFINITION (UNCHANGED)
+# MODEL DEFINITION (UNCHANGED ARCHITECTURE)
 # =========================================================
 class BayesianLinear(nn.Module):
     def __init__(self, in_features, out_features):
@@ -37,7 +37,8 @@ class BayesianLinear(nn.Module):
 class CardioBNN(nn.Module):
     def __init__(self):
         super().__init__()
-        self.fc1 = BayesianLinear(14, 64)
+        # ✅ FIX: MUST MATCH TRAINING (19 FEATURES)
+        self.fc1 = BayesianLinear(19, 64)
         self.fc2 = BayesianLinear(64, 32)
         self.fc3 = BayesianLinear(32, 4)
         self.relu = nn.ReLU()
