@@ -53,7 +53,7 @@ class CardioBNN(nn.Module):
 # =========================================================
 model = CardioBNN()
 model.load_state_dict(
-    torch.load(MODEL_DIR / "bnn_model.pth", map_location="cpu"),
+    torch.load(MODEL_DIR / "bnn_19f_GPU2.pth", map_location="cpu"),
     strict=False
 )
 model.eval()
