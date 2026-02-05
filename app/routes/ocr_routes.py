@@ -12,7 +12,7 @@ UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 @router.post("/upload")
 async def ocr_upload(file: UploadFile = File(...)):
     try:
-        if not file.content_type.startswith("image/"):
+        if not file.content_type or not file.content_type.startswith("image/"):
             raise HTTPException(status_code=400, detail="Only image files allowed")
 
         suffix = Path(file.filename).suffix
@@ -22,7 +22,7 @@ async def ocr_upload(file: UploadFile = File(...)):
         with open(path, "wb") as f:
             shutil.copyfileobj(file.file, f)
 
-        # ✅ LAZY IMPORT (CRITICAL FIX)
+        # ✅ Lazy imports (critical for memory)
         from app.ocr_pipeline.ocr_engine import extract_text_with_boxes
         from app.ocr_pipeline.field_mapper import map_fields
 
