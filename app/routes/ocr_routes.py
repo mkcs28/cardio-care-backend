@@ -32,13 +32,10 @@ async def ocr_upload(file: UploadFile = File(...)):
 
         mapped = map_fields(texts)
 
-        if not mapped:
-            return {
-                "extracted_fields": {},
-                "warning": "OCR text detected but no fields matched"
-            }
-
-        return {"extracted_fields": mapped}
+        return {
+                "extracted_fields": mapped,
+                "raw_text":texts
+        }
 
     except HTTPException:
         raise
