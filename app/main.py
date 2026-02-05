@@ -153,6 +153,9 @@ app = FastAPI(title="Cardio Care API")
 # ✅ ADDITION (REGISTER OCR ROUTES)
 app.include_router(ocr_router)
 
+@app.get("/")
+def health():
+    return {"status":"ok"}
 # =========================================================
 # INPUT SCHEMA
 # =========================================================
