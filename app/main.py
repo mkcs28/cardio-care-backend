@@ -6,6 +6,9 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from pathlib import Path
 
+# ✅ ADDITION (REQUIRED FOR OCR ROUTES)
+from app.routes.ocr_routes import router as ocr_router
+
 # =========================================================
 # PATH SETUP
 # =========================================================
@@ -106,11 +109,9 @@ def map_tc(tc):
 def map_creatinine(c): 
     return 1 if c <= 1.2 else 3 if c <= 2 else 6
 
-# ✅ TyG mapping (AS YOU REQUESTED)
 def map_tyg(t):
     return 1 if t < 8 else 10 if t <= 8.7 else 20
 
-# ✅ LDL / HDL ratio mapping (AS YOU REQUESTED)
 def map_hdl_ldl(r):
     return 1 if r < 2 else 5 if r < 3.5 else 10
 
@@ -124,18 +125,33 @@ def map_alcohol(a):
     return 5 if a == "Yes" else 1
 
 def map_alcohol_freq(f): 
-    return {"Daily":20,"Several times a week":15,"Once a week":10,"Occasionally":5,"Past":3}.get(f,1)
+    return {
+        "Daily": 20,
+        "Several times a week": 15,
+        "Once a week": 10,
+        "Occasionally": 5,
+        "Past": 3
+    }.get(f, 1)
 
 def map_smoking(s): 
     return 10 if s == "Yes" else 1
 
 def map_smoking_freq(f): 
-    return {"Daily":40,"Several times a week":30,"Once a week":20,"Occasionally":10,"Past":6}.get(f,2)
+    return {
+        "Daily": 40,
+        "Several times a week": 30,
+        "Once a week": 20,
+        "Occasionally": 10,
+        "Past": 6
+    }.get(f, 2)
 
 # =========================================================
 # FASTAPI APP
 # =========================================================
 app = FastAPI(title="Cardio Care API")
+
+# ✅ ADDITION (REGISTER OCR ROUTES)
+app.include_router(ocr_router)
 
 # =========================================================
 # INPUT SCHEMA
@@ -166,12 +182,10 @@ class PredictInput(BaseModel):
 @app.post("/predict")
 def predict(data: PredictInput):
 
-    # Auto-calculated features
     tyg = np.log((data.tgl * data.fbs) / 2)
     ldl_hdl = data.ldl / data.hdl if data.hdl != 0 else 0
     gender_code = map_gender(data.gender)
 
-    # ✅ EXACT 19 FEATURES (MATCH TRAINING)
     ml_features = [
         gender_code,
         map_age(data.age),
