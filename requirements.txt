@@ -4,3 +4,13 @@ numpy
 scikit-learn
 pydantic
 torch
+
+# OCR + image handling
+easyocr
+opencv-python-headless
+pillow
+python-multipart
+regex
+
+# Stability
+scipy
