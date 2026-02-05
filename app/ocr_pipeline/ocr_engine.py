@@ -1,10 +1,28 @@
-import easyocr
+import pytesseract
+from PIL import Image
 
-reader = easyocr.Reader(["en"], gpu=False)
+TESSERACT_CONFIG = "--oem 1 --psm 6"
 
-def extract_text_with_boxes(image_path):
-    results = reader.readtext(image_path)
-    texts = []
-    for bbox, text, conf in results:
-        texts.append(text.lower())
-    return texts
+def extract_text_with_boxes(image_path: str):
+    """
+    Lightweight OCR using Tesseract.
+    Returns list of text lines.
+    """
+    try:
+        image = Image.open(image_path)
+        raw_text = pytesseract.image_to_string(
+            image,
+            lang="eng",
+            config=TESSERACT_CONFIG
+        )
+
+        lines = [
+            line.strip().lower()
+            for line in raw_text.splitlines()
+            if line.strip()
+        ]
+        return lines
+
+    except Exception as e:
+        print(f"OCR failed: {e}")
+        return []
