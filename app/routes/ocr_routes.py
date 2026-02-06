@@ -28,6 +28,9 @@ async def ocr_upload(file: UploadFile = File(...)):
     texts = extract_text_with_boxes(str(path))
     mapped = map_fields(texts) if texts else {}
 
+    print("RAW OCR TEXT:", texts)
+    print("MAPPED FIELDS:", mapped)
+    
     return {
         "extracted_fields": mapped,
         "raw_text": texts
