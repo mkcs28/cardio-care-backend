@@ -217,7 +217,7 @@ def predict(data: PredictInput):
     X = torch.tensor(X, dtype=torch.float32)
 
     with torch.no_grad():
-        probs = torch.softmax(model(X), dim=1).numpy()[0]
+        probs = torch.softmax(model(X), dim=1)[0].tolist()
 
     pred_idx = int(np.argmax(probs))
     pred_label = le.inverse_transform([pred_idx])[0]
